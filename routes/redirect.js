@@ -5,10 +5,24 @@ const Url = require('../models/Url');
 
 router.get('/:shortCode', async (req, res) => {
     try {
-        let url = await Url.findOne({ shortCode: req.params.shortCode });
+        const { shortCode } = req.params;
+        let url = await Url.findOne({ shortCode });
 
         if(url) {
-            url.visits += 1;
+            if(req.cookies.hasOwnProperty(shortCode)) {
+                res.cookie(shortCode, true, {
+                    maxAge: 1000 * 60 * 60 * 24,
+                });
+
+                url.visits += 1;
+            } else {
+                res.cookie(shortCode, true, {
+                    maxAge: 1000 * 60 * 60 * 24,
+                });
+
+                url.visits += 1;
+                url.unique += 1;
+            }
             await url.save();
             return res.redirect(302, `https://${url.longUrl}`);
         } else {

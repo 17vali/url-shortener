@@ -4,25 +4,20 @@ const config = require('config');
 
 const Url = require('../models/Url');
 
-router.post('/:shortCode/*', async (req, res) => {
+router.patch('/:shortCode/*', async (req, res) => {
     const { shortCode, '0': longUrl } = req.params;
     if(longUrl && shortCode) {
         try {
-            let url = await Url.findOne({ longUrl });
+            let url = await Url.findOne({ shortCode });
 
-            if(url) {
-                res.status(200).send('Exists');
+            if(!url) {
+                res.status(400);
             } else {
-                url = new Url({
-                    shortCode,
-                    longUrl,
-                    visits: 0,
-                    unique: 0,
-                });
+                url.longUrl = longUrl;
 
                 await url.save();
 
-                res.sendStatus(201);
+                res.sendStatus(200);
             }
         } catch (err) {
             console.error(err);
