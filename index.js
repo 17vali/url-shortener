@@ -1,6 +1,12 @@
 const express = require('express');
+const connectDB = require('./config/db')
 
 const app = express();
+
+connectDB();
+
+app.use('/redirect', require('./routes/redirect'));
+app.use('/create', require('./routes/create'));
 
 const PORT = 5000;
 
