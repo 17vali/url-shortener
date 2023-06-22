@@ -4,15 +4,14 @@ const config = require('config');
 
 const Url = require('../models/Url');
 
-router.post('/:shortCode/:longUrl', async (req, res) => {
-    const { shortCode, longUrl } = req.params;
-    console.log(shortCode, longUrl);
+router.post('/:shortCode/*', async (req, res) => {
+    const { shortCode, '0': longUrl } = req.params;
     if(longUrl && shortCode) {
         try {
             let url = await Url.findOne({ longUrl });
 
             if(url) {
-
+                res.status(200).send('Exists');
             } else {
                 url = new Url({
                     shortCode,

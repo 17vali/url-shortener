@@ -18,6 +18,6 @@ router.get('/:shortCode', async (req, res) => {
         console.error(err);
         res.status(500);
     }
-})
+});
 
 module.exports = router;
